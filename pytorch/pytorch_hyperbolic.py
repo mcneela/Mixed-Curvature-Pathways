@@ -1,7 +1,9 @@
 import logging, argh
+import argparse
 import os, sys
 import networkx as nx
 import random
+import wandb
 
 import torch
 from torch import nn
@@ -284,58 +286,10 @@ def major_stats(G, n, m, lazy_generation, Z,z, fig, ax, writer, visualize, subsa
 
     return avg_dist, wc_dist, me, mc, mapscore
 
-
-@argh.arg("dataset", help="dataset number")
-# model params
-@argh.arg("-d", "--dim", help="Dimension to use")
-@argh.arg("--hyp", help="Number of copies of hyperbolic space")
-@argh.arg("--edim", help="Euclidean dimension to use")
-@argh.arg("--euc", help="Number of copies of Euclidean space")
-@argh.arg("--sdim", help="Spherical dimension to use")
-@argh.arg("--sph", help="Number of copies of spherical space")
-@argh.arg("--riemann", help="Use Riemannian metric for product space. Otherwise, use L1 sum")
-@argh.arg("-s", "--scale", help="Scale factor")
-@argh.arg("-t", "--tol", help="Tolerances for projection")
-# optimizers and params
-@argh.arg("-y", "--use-yellowfin", help="Turn off yellowfin")
-@argh.arg("--use-adagrad", help="Use adagrad")
-@argh.arg("--use-svrg", help="Use SVRG")
-@argh.arg("-T", help="SVRG T parameter")
-@argh.arg("--use-hmds", help="Use MDS warmstart")
-@argh.arg("-l", "--learning-rate", help="Learning rate")
-@argh.arg("--decay-length", help="Number of epochs per lr decay")
-@argh.arg("--decay-step", help="Size of lr decay")
-@argh.arg("--momentum", help="Momentum")
-@argh.arg("--epochs", help="number of steps in optimization")
-@argh.arg("--burn-in", help="number of epochs to initially train at lower LR")
-@argh.arg("-x", "--extra-steps", type=int, help="Steps per batch")
-# data
-@argh.arg("--num-workers", help="Number of workers for loading. Default is to use all cores")
-@argh.arg("--batch-size", help="Batch size (number of edges)")
-@argh.arg("--sample", help="Sample the distance matrix")
-@argh.arg("-g", "--lazy-generation", help="Use a lazy data generation technique")
-@argh.arg("--subsample", type=int, help="Number of edges per row to subsample")
-@argh.arg("--resample-freq", type=int, help="Resample data frequency (expensive)")
-# logging and saving
-@argh.arg("--print-freq", help="Print loss this every this number of steps")
-@argh.arg("--checkpoint-freq", help="Checkpoint Frequency (Expensive)")
-@argh.arg("--model-save-file", help="Save model file")
-@argh.arg("--model-load-file", help="Load model file")
-@argh.arg("-w", "--warm-start", help="Warm start the model with MDS")
-@argh.arg("--log-name", help="Log to a file")
-@argh.arg("--log", help="Log to a file (automatic name)")
-# misc
-@argh.arg("--learn-scale", help="Learn scale")
-@argh.arg("--logloss")
-@argh.arg("--distloss")
-@argh.arg("--squareloss")
-@argh.arg("--symloss")
-@argh.arg("-e", "--exponential-rescale", type=float, help="Exponential Rescale")
-@argh.arg("--visualize", help="Produce an animation (dimension 2 only)")
-def learn(dataset, dim=2, hyp=1, edim=1, euc=0, sdim=1, sph=0, scale=1., riemann=False, learning_rate=1e-1, decay_length=1000, decay_step=1.0, momentum=0.0, tol=1e-8, epochs=100, burn_in=0,
-          use_yellowfin=False, use_adagrad=False, resample_freq=1000, print_freq=1, model_save_file=None, model_load_file=None, batch_size=16,
-          num_workers=None, lazy_generation=False, log_name=None, log=False, warm_start=None, learn_scale=False, checkpoint_freq=100, sample=1., subsample=None,
-          logloss=False, distloss=False, squareloss=False, symloss=False, exponential_rescale=None, extra_steps=1, use_svrg=False, T=10, use_hmds=False, visualize=False):
+def learn(dataset, dim, hyp, edim, euc, sdim, sph, scale, riemann, learning_rate, decay_length, decay_step, momentum, tol, epochs, burn_in,
+          use_yellowfin, use_adagrad, resample_freq, print_freq, model_save_file, model_load_file, batch_size,
+          num_workers, lazy_generation, log_name, log, warm_start, learn_scale, checkpoint_freq, sample, subsample,
+          logloss, distloss, squareloss, symloss, exponential_rescale, extra_steps, use_svrg, T, use_hmds, visualize, table=None, artifact=None):
     # Log configuration
     formatter = logging.Formatter('%(asctime)s %(message)s')
     logging.basicConfig(level=logging.DEBUG,
@@ -420,18 +374,18 @@ def learn(dataset, dim=2, hyp=1, edim=1, euc=0, sdim=1, sph=0, scale=1., riemann
     euc_params = [p for p in m.euc_params if not p.use_exp]
     sph_params = [p for p in m.sph_params if not p.use_exp]
     scale_params = m.scale_params
-    # model_params = [{'params': m.embed_params}, {'params': m.scale_params, 'lr': 1e-4*learning_rate}]
-    # model_params = [{'params': learn_params}, {'params': m.scale_params, 'lr': 1e-4*learning_rate}]
-    model_params = [{'params': hyp_params}, {'params': euc_params}, {'params': sph_params, 'lr': 0.1*learning_rate}, {'params': m.scale_params, 'lr': 1e-4*learning_rate}]
+    model_params = [
+        {'params': hyp_params},
+        {'params': euc_params},
+        {'params': sph_params,
+         'lr': 0.1*learning_rate},
+        {'params': m.scale_params,
+         'lr': 1e-4*learning_rate}
+    ]
 
     # opt = None
     if len(model_params) > 0:
         opt = torch.optim.SGD(model_params, lr=learning_rate/10, momentum=momentum)
-        # opt = torch.optim.SGD(learn_params, lr=learning_rate/10, momentum=momentum)
-    # opt = torch.optim.SGD(model_params, lr=learning_rate/10, momentum=momentum)
-    # exp = None
-    # if len(exp_params) > 0:
-    #     exp = torch.optim.SGD(exp_params, lr=1.0) # dummy for zeroing
     if len(scale_params) > 0:
         scale_opt = torch.optim.SGD(scale_params, lr=1e-3*learning_rate)
         scale_decay = torch.optim.lr_scheduler.StepLR(scale_opt, step_size=1, gamma=.99)
@@ -439,7 +393,6 @@ def learn(dataset, dim=2, hyp=1, edim=1, euc=0, sdim=1, sph=0, scale=1., riemann
         scale_opt = None
         scale_decay = None
     lr_burn_in = torch.optim.lr_scheduler.MultiStepLR(opt, milestones=[burn_in], gamma=10)
-    # lr_decay = torch.optim.lr_scheduler.StepLR(opt, decay_length, decay_step) #TODO reconcile multiple LR schedulers
     if use_yellowfin:
         from yellowfin import YFOptimizer
         opt = YFOptimizer(model_params)
@@ -458,7 +411,7 @@ def learn(dataset, dim=2, hyp=1, edim=1, euc=0, sdim=1, sph=0, scale=1., riemann
 
     # Log stats from import: when warmstarting, check that it matches Julia's stats
     logging.info(f"*** Initial Checkpoint. Computing Stats")
-    major_stats(GM,n,m, lazy_generation, Z, z, fig, ax, writer, visualize, subsample)
+    major_stats(GM, n, m, lazy_generation, Z, z, fig, ax, writer, visualize, subsample)
     logging.info("*** End Initial Checkpoint\n")
 
     # track best stats
@@ -468,12 +421,6 @@ def learn(dataset, dim=2, hyp=1, edim=1, euc=0, sdim=1, sph=0, scale=1., riemann
     best_map    = 0.0
     for i in range(m.epoch+1, m.epoch+epochs+1):
         lr_burn_in.step()
-        # lr_decay.step()
-        # scale_decay.step()
-        # print(scale_opt.param_groups[0]['lr'])
-        # for param_group in opt.param_groups:
-        #     print(param_group['lr'])
-        # print(type(opt.param_groups), opt.param_groups)
 
         l, n_edges = 0.0, 0.0 # track average loss per edge
         m.train(True)
@@ -490,7 +437,6 @@ def learn(dataset, dim=2, hyp=1, edim=1, euc=0, sdim=1, sph=0, scale=1., riemann
                 m.normalize()
 
         else:
-            # scale_opt.zero_grad()
             for the_step in range(extra_steps):
                 # Accumulate the gradient
                 for u in z:
@@ -506,7 +452,6 @@ def learn(dataset, dim=2, hyp=1, edim=1, euc=0, sdim=1, sph=0, scale=1., riemann
                     _loss = m.loss(cu_var(u))
                     _loss.backward()
                     l += _loss.item() * u[0].size(0)
-                    # print(weight)
                     n_edges += u[0].size(0)
                     # modify gradients if necessary
                     RParameter.correct_metric(m.parameters())
@@ -517,22 +462,23 @@ def learn(dataset, dim=2, hyp=1, edim=1, euc=0, sdim=1, sph=0, scale=1., riemann
                         p.exp(lr)
                     # Projection
                     m.normalize()
-            # scale_opt.step()
 
         l /= n_edges
 
         # m.epoch refers to num of training epochs finished
         m.epoch += 1
 
-        # Logging code
-        # if l < tol:
-        #         logging.info("Found a {l} solution. Done at iteration {i}!")
-        #         break
         if i % print_freq == 0:
             logging.info(f"{i} loss={l}")
         if (i <= burn_in and i % (checkpoint_freq/5) == 0) or i % checkpoint_freq == 0:
             logging.info(f"\n*** Major Checkpoint. Computing Stats and Saving")
             avg_dist, wc_dist, me, mc, mapscore = major_stats(GM,n,m, True, Z, z, fig, ax, writer, visualize, subsample)
+            wandb.log({
+                'Average Distortion': avg_dist,
+                'Worst-Case Distortion': wc_dist,
+                'Maximum Expansion': me,
+                'Maximum Compression': mc
+            })
             best_loss   = min(best_loss, l)
             best_dist   = min(best_dist, avg_dist)
             best_wcdist = min(best_wcdist, wc_dist)
@@ -548,6 +494,17 @@ def learn(dataset, dim=2, hyp=1, edim=1, euc=0, sdim=1, sph=0, scale=1., riemann
 
     logging.info(f"final loss={l}")
     logging.info(f"best loss={best_loss}, distortion={best_dist}, map={best_map}, wc_dist={best_wcdist}")
+    # wandb.log({
+    #     'Final Loss': l,
+    #     'Best Loss': best_loss,
+    #     'Best Distortion': best_dist,
+    #     'Best MAP': best_map,
+    #     'Best WC Distortion': best_wcdist
+    # })
+    table.add_data(l, best_loss, best_dist, best_map, best_wcdist)
+    artifact.add( table, "predictions")
+    wandb.run.log_artifact(artifact)
+
 
     final_dist, final_wc, final_me, final_mc, final_map = major_stats(GM, n, m, lazy_generation, Z,z, fig, ax, writer, False, subsample)
 
@@ -567,6 +524,66 @@ def learn(dataset, dim=2, hyp=1, edim=1, euc=0, sdim=1, sph=0, scale=1., riemann
 
 
 if __name__ == '__main__':
-    _parser = argh.ArghParser()
-    _parser.add_commands([learn])
-    _parser.dispatch()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", help="dataset number")
+    # model params
+    parser.add_argument("-d", "--dim", type=int, default=33, help="Dimension to use")
+    parser.add_argument("--hyp", type=int, default=1, help="Number of copies of hyperbolic space")
+    parser.add_argument("--edim", type=int, default=33, help="Euclidean dimension to use")
+    parser.add_argument("--euc", type=int, default=1, help="Number of copies of Euclidean space")
+    parser.add_argument("--sdim", type=int, default=33, help="Spherical dimension to use")
+    parser.add_argument("--sph", type=int, default=1, help="Number of copies of spherical space")
+    parser.add_argument("--riemann", default=False, action="store_true", help="Use Riemannian metric for product space. Otherwise, use L1 sum")
+    parser.add_argument("-s", "--scale", type=float, default=1.0, help="Scale factor")
+    parser.add_argument("-t", "--tol", type=float, default=1e-8, help="Tolerances for projection")
+    # optimizers and params
+    parser.add_argument("-y", "--use-yellowfin", action="store_true", default=False, help="Turn off yellowfin")
+    parser.add_argument("--use-adagrad", action="store_true", default=False, help="Use adagrad")
+    parser.add_argument("--use-svrg", action="store_true", default=False, help="Use SVRG")
+    parser.add_argument("-T", type=int, default=10, help="SVRG T parameter")
+    parser.add_argument("--use-hmds", action="store_true", default=False, help="Use MDS warmstart")
+    parser.add_argument("-l", "--learning-rate", type=float, default=0.1, help="Learning rate")
+    parser.add_argument("--decay-length", type=int, default=1000, help="Number of epochs per lr decay")
+    parser.add_argument("--decay-step", type=int, default=1, help="Size of lr decay")
+    parser.add_argument("--momentum", type=float, default=0.0, help="Momentum")
+    parser.add_argument("--epochs", type=int, default=100, help="number of steps in optimization")
+    parser.add_argument("--burn-in", type=int, default=0, help="number of epochs to initially train at lower LR")
+    parser.add_argument("-x", "--extra-steps", type=int, default=1, help="Steps per batch")
+    # data
+    parser.add_argument("--num-workers", type=int, default=None, help="Number of workers for loading. Default is to use all cores")
+    parser.add_argument("--batch-size", type=int, default=16, help="Batch size (number of edges)")
+    parser.add_argument("--sample", type=float, default=1.0, help="Sample the distance matrix")
+    parser.add_argument("-g", "--lazy-generation", action="store_true", default=False, help="Use a lazy data generation technique")
+    parser.add_argument("--subsample", type=int, default=None, help="Number of edges per row to subsample")
+    parser.add_argument("--resample-freq", type=int, default=1000, help="Resample data frequency (expensive)")
+    # logging and saving
+    parser.add_argument("--print-freq", type=int, default=1, help="Print loss this every this number of steps")
+    parser.add_argument("--checkpoint-freq", type=int, default=100, help="Checkpoint Frequency (Expensive)")
+    parser.add_argument("--model-save-file", type=str, default=None, help="Save model file")
+    parser.add_argument("--model-load-file", type=str, default=None, help="Load model file")
+    parser.add_argument("-w", "--warm-start", action="store_true", default=False, help="Warm start the model with MDS")
+    parser.add_argument("--log-name", type=str, default=None, help="Log to a file")
+    parser.add_argument("--log", action="store_true", default=False, help="Log to a file (automatic name)")
+    # misc
+    parser.add_argument("--learn-scale", action="store_true", default=False, help="Learn scale")
+    parser.add_argument("--logloss", action="store_true", default=False)
+    parser.add_argument("--distloss", action="store_true", default=False)
+    parser.add_argument("--squareloss", action="store_true", default=False)
+    parser.add_argument("--symloss", action="store_true", default=False)
+    parser.add_argument("-e", "--exponential-rescale", type=float, default=None, help="Exponential Rescale")
+    parser.add_argument("--visualize", action="store_true", default=False, help="Produce an animation (dimension 2 only)")
+
+    args = parser.parse_args()
+    wandb.init(project="mixed-curvature", entity="mcneela", config=args)
+    # wandb.log(**vars(args))
+    wandb.run.name = args.dataset.split('/')[1]
+    config = wandb.config
+
+    columns = ['Final Loss', 'Best Loss', 'Best Distortion', \
+               'Best MAP', 'Best WC Distortion']
+    table = wandb.Table(columns=columns)
+    run_data = wandb.Artifact("run_data_" + str(wandb.run.id), type="predictions")
+
+    args = vars(args)
+    args = {k: v for k, v in args.items()}
+    learn(**args, table=table, artifact=run_data)
