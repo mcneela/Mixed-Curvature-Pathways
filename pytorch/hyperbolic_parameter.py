@@ -113,9 +113,9 @@ class HyperboloidParameter(RParameter):
 
         else:
             # print("tangent", HyperboloidParameter.dot_h(x, v))
-            assert torch.all(1 - torch.isnan(v))
+            assert torch.all(1 - torch.isnan(v).int())
             n = self.__class__.norm_h(v).unsqueeze(-1)
-            assert torch.all(1 - torch.isnan(n))
+            assert torch.all(1 - torch.isnan(v).int())
             n.clamp_(max=1.0)
             # e = torch.cosh(n)*x + torch.sinh(n)*v/n
             mask = torch.abs(n)<1e-7
