@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
-# code file should default to code.tar.gz if you're using submit.sh and submit.py
 CODE_FN=code.tar.gz
-# if your environment file is called something different (like my_env.tar.gz), set it here...
 ENV_FN=env.tar.gz
-# same with your data file
 DATA_FN=data.tar.gz
-
 
 # exit if any command fails...
 set -e
@@ -23,14 +19,23 @@ echo "Cluster: $CLUSTER"
 echo "Process: $PROCESS"
 echo "RunningOn: $RUNNINGON"
 
-# this makes it easier to set up the environments, since the PWD we are running in is not $HOME
+# this makes it easier to set up the environments, 
+# since the PWD we are running in is not $HOME.
 export HOME=$PWD
 
-# un-tar the code repo (transferred from submit node), removing the enclosing folder with strip-components
+# un-tar the code repo (transferred from submit node), 
+# removing the enclosing folder with strip-components
 if [ -f "$CODE_FN" ]; then
   echo "Extracting $CODE_FN"
   tar -xf code.tar.gz --strip-components=1
   rm code.tar.gz
+fi
+
+# un-tar the data
+if [ -f "$DATA_FN" ]; then
+  echo "Extracting $DATA_FN"
+  tar -xzf $DATA_FN
+  rm $DATA_FN
 fi
 
 # set up python environment
@@ -56,6 +61,6 @@ echo "Activating Python environment"
 export PATH
 . env/bin/activate
 
-echo "Launching train.py"
-python3 code/train.py @"args/${PROCESS}.txt" --cluster="$CLUSTER" --process="$PROCESS" --github_tag="$GITHUB_TAG"
+echo "Launching mixed curvature trainer"
+python wrapper.py --batch-num $PROCESS --batch-size 10
 
