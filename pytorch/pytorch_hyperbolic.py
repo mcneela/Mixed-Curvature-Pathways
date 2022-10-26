@@ -1,4 +1,4 @@
-import logging, argh
+import logging
 import argparse
 import os, sys
 import networkx as nx
@@ -296,7 +296,9 @@ def learn(dataset, dim, hyp, edim, euc, sdim, sph, scale, riemann, learning_rate
                         format='%(asctime)s %(message)s',
                         datefmt='%FT%T',)
     if log_name is None and log:
-        log_name = f"{os.path.splitext(dataset)[0]}.H{dim}-{hyp}.E{edim}-{euc}.S{sdim}-{sph}.lr{learning_rate}.log"
+        if not os.path.exists('output'):
+            os.makedirs('output')
+        log_name = f"output/{os.path.splitext(dataset)[0]}.H{dim}-{hyp}.E{edim}-{euc}.S{sdim}-{sph}.lr{learning_rate}.log"
     if log_name is not None:
         logging.info(f"Logging to {log_name}")
         log = logging.getLogger()
