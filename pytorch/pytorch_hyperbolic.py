@@ -291,14 +291,15 @@ def learn(dataset, dim, hyp, edim, euc, sdim, sph, scale, riemann, learning_rate
           num_workers, lazy_generation, log_name, log, warm_start, learn_scale, checkpoint_freq, sample, subsample,
           logloss, distloss, squareloss, symloss, exponential_rescale, extra_steps, use_svrg, T, use_hmds, visualize, table=None, artifact=None):
     # Log configuration
+    if log_name is None and log:
+        if not os.path.exists('log'):
+            os.makedirs('log')
+        log_name = f"log/{dataset.split('/')[1]}.H{dim}-{hyp}.E{edim}-{euc}.S{sdim}-{sph}.lr{learning_rate}.log"
     formatter = logging.Formatter('%(asctime)s %(message)s')
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(filename=log_name,
+                        level=logging.INFO,
                         format='%(asctime)s %(message)s',
                         datefmt='%FT%T',)
-    if log_name is None and log:
-        if not os.path.exists('output'):
-            os.makedirs('output')
-        log_name = f"output/{os.path.splitext(dataset)[0]}.H{dim}-{hyp}.E{edim}-{euc}.S{sdim}-{sph}.lr{learning_rate}.log"
     if log_name is not None:
         logging.info(f"Logging to {log_name}")
         log = logging.getLogger()
@@ -475,12 +476,12 @@ def learn(dataset, dim, hyp, edim, euc, sdim, sph, scale, riemann, learning_rate
         if (i <= burn_in and i % (checkpoint_freq/5) == 0) or i % checkpoint_freq == 0:
             logging.info(f"\n*** Major Checkpoint. Computing Stats and Saving")
             avg_dist, wc_dist, me, mc, mapscore = major_stats(GM,n,m, True, Z, z, fig, ax, writer, visualize, subsample)
-            wandb.log({
-                'Average Distortion': avg_dist,
-                'Worst-Case Distortion': wc_dist,
-                'Maximum Expansion': me,
-                'Maximum Compression': mc
-            })
+            #wandb.log({
+            #    'Average Distortion': avg_dist,
+            #    'Worst-Case Distortion': wc_dist,
+            #    'Maximum Expansion': me,
+            #    'Maximum Compression': mc
+            #})
             best_loss   = min(best_loss, l)
             best_dist   = min(best_dist, avg_dist)
             best_wcdist = min(best_wcdist, wc_dist)
@@ -503,9 +504,9 @@ def learn(dataset, dim, hyp, edim, euc, sdim, sph, scale, riemann, learning_rate
     #     'Best MAP': best_map,
     #     'Best WC Distortion': best_wcdist
     # })
-    table.add_data(l, best_loss, best_dist, best_map, best_wcdist)
-    artifact.add( table, "predictions")
-    wandb.run.log_artifact(artifact)
+    #table.add_data(l, best_loss, best_dist, best_map, best_wcdist)
+    #artifact.add( table, "predictions")
+    #wandb.run.log_artifact(artifact)
 
 
     final_dist, final_wc, final_me, final_mc, final_map = major_stats(GM, n, m, lazy_generation, Z,z, fig, ax, writer, False, subsample)
@@ -576,16 +577,17 @@ if __name__ == '__main__':
     parser.add_argument("--visualize", action="store_true", default=False, help="Produce an animation (dimension 2 only)")
 
     args = parser.parse_args()
-    wandb.init(project="mixed-curvature", entity="mcneela", config=args)
+    #wandb.init(project="mixed-curvature", entity="mcneela", config=args)
     # wandb.log(**vars(args))
-    wandb.run.name = args.dataset.split('/')[1]
-    config = wandb.config
+    #wandb.run.name = args.dataset.split('/')[1]
+    #config = wandb.config
 
     columns = ['Final Loss', 'Best Loss', 'Best Distortion', \
                'Best MAP', 'Best WC Distortion']
-    table = wandb.Table(columns=columns)
-    run_data = wandb.Artifact("run_data_" + str(wandb.run.id), type="predictions")
+    #table = wandb.Table(columns=columns)
+    #run_data = wandb.Artifact("run_data_" + str(wandb.run.id), type="predictions")
 
     args = vars(args)
     args = {k: v for k, v in args.items()}
-    learn(**args, table=table, artifact=run_data)
+    #learn(**args, table=table, artifact=run_data)
+    learn(**args)
