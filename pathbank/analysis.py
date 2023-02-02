@@ -6,7 +6,7 @@ import networkx as nx
 import numpy as np
 from tqdm import tqdm
 
-df = pd.read_csv('all_data.tsv', sep='\t')
+df = pd.read_csv('second_all_data.tsv', sep='\t')
 
 def hyperbolicity_sample(G, num_samples=50000):
     curr_time = time.time()
@@ -37,21 +37,32 @@ best_dists = {}
 best_dist_counts = {}
 best_spaces = {}
 best_space_counts = {}
-with open('unique_best_spaces.tsv', 'w', newline='') as fpath:
+with open('unique_best_spaces_3.tsv', 'w', newline='') as fpath:
     writer = csv.writer(fpath, delimiter='\t')
-    writer.writerow(['Graph num', 'Num Nodes', 'Num Edges', 'H dim', 'H copies', 'E dim', 'E copies', 'S dim', 'S copies', 'Num Triangles', 'Delta Hyperbolicity'])
-    for graph_num in df['Graph num'].unique():
+    writer.writerow(['Graph num', 'Num Nodes', 'Num Edges', 'H dim', 'H copies', 'E dim', 'E copies', 'S dim', 'S copies', 'Num Triangles', 'Dist Range', 'Dist Diff from Mean', 'Dist Diff from Next Best', 'Dist Diff from Euclidean', '% Dist Diff From Euclidean', 'Best Euclidean Distortion', 'Best Overall Distortion'])
+    for i, graph_num in enumerate(df['Graph num'].unique()):
         graph = df[df['Graph num'] == graph_num]
         ranges[graph_num] = graph['Best dist'].max() - graph['Best dist'].min()
+        dist_range = graph['Best dist'].max() - graph['Best dist'].min()
+        dist_diff_from_mean = graph['Best dist'].min() - graph['Best dist'].mean()
+        dist_diff_from_next_best = sorted(graph['Best dist'])[0] - sorted(graph['Best dist'])[1]
+        euclids = graph[(graph['E copies'] > 0) & (graph['H copies'] == 0) & (graph['S copies'] == 0)]['Best dist']
+        best_euclidean_dist = euclids.min()
+        best_overall_dist = graph['Best dist'].min()
+        dist_diff_from_euclidean = euclids.min() - graph['Best dist'].min()
+        percent_dist_diff_from_euclidean = dist_diff_from_euclidean / euclids.min() * 100
         best_dists[graph_num] = graph['Best dist'].min()
         best_dist_counts[graph_num] = len(graph[graph['Best dist'] == graph['Best dist'].min()])
         best_space = graph[graph['Best dist'] == graph['Best dist'].min()]
         best_space_counts[graph_num] = len(best_space)
         best_spaces[graph_num] = [(best_space.iloc[0]['H dim'], best_space.iloc[0]['H copies']), (best_space.iloc[0]['E dim'], best_space.iloc[0]['E copies']), (best_space.iloc[0]['S dim'], best_space.iloc[0]['S copies'])]
-
         graph_file = open(f'../data/{graph_num}/{graph_num}.edges', 'r')
         g = nx.read_edgelist(graph_file)
-        d_h = hyperbolicity_sample(g)
+        # try:
+        #     d_h = hyperbolicity_sample(g)
+        # except:
+        #     d_h = 'N/A'
+        #     continue
         triangles = sum(list(nx.triangles(g).values())) // 3
         if best_space_counts[graph_num] == 1:
             writer.writerow([
@@ -65,7 +76,14 @@ with open('unique_best_spaces.tsv', 'w', newline='') as fpath:
                 best_space.iloc[0]['S dim'], 
                 int(best_space.iloc[0]['S copies']),
                 triangles,
-                d_h
+                # d_h
+                dist_range,
+                dist_diff_from_mean,
+                dist_diff_from_next_best,
+                dist_diff_from_euclidean,
+                percent_dist_diff_from_euclidean,
+                best_euclidean_dist,
+                best_overall_dist
             ])
 
 # 167 graphs with single best space
