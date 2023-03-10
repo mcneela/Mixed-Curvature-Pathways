@@ -39,7 +39,7 @@ best_spaces = {}
 best_space_counts = {}
 with open('unique_best_spaces_3.tsv', 'w', newline='') as fpath:
     writer = csv.writer(fpath, delimiter='\t')
-    writer.writerow(['Graph num', 'Num Nodes', 'Num Edges', 'H dim', 'H copies', 'E dim', 'E copies', 'S dim', 'S copies', 'Num Triangles', 'Dist Range', 'Dist Diff from Mean', 'Dist Diff from Next Best', 'Dist Diff from Euclidean', '% Dist Diff From Euclidean', 'Best Euclidean Distortion', 'Best Overall Distortion'])
+    writer.writerow(['Graph num', 'Num Nodes', 'Num Edges', 'Density', 'Number of Self Loops', 'Node Connectivity', 'Avg Clustering Coeff', 'Diameter', 'Degree Assortativity', 'Is Bipartite', 'H dim', 'H copies', 'E dim', 'E copies', 'S dim', 'S copies', 'Num Triangles', 'Dist Range', 'Dist Diff from Mean', 'Dist Diff from Next Best', 'Dist Diff from Euclidean', '% Dist Diff From Euclidean', 'Best Euclidean Distortion', 'Best Overall Distortion'])
     for i, graph_num in enumerate(df['Graph num'].unique()):
         graph = df[df['Graph num'] == graph_num]
         ranges[graph_num] = graph['Best dist'].max() - graph['Best dist'].min()
@@ -58,17 +58,35 @@ with open('unique_best_spaces_3.tsv', 'w', newline='') as fpath:
         best_spaces[graph_num] = [(best_space.iloc[0]['H dim'], best_space.iloc[0]['H copies']), (best_space.iloc[0]['E dim'], best_space.iloc[0]['E copies']), (best_space.iloc[0]['S dim'], best_space.iloc[0]['S copies'])]
         graph_file = open(f'../data/{graph_num}/{graph_num}.edges', 'r')
         g = nx.read_edgelist(graph_file)
+        from networkx.algorithms import approximation as approx
         # try:
         #     d_h = hyperbolicity_sample(g)
         # except:
         #     d_h = 'N/A'
         #     continue
         triangles = sum(list(nx.triangles(g).values())) // 3
+        density = nx.density(g)
+        self_loops = nx.number_of_selfloops(g)
+        node_connectivity = nx.node_connectivity(g)
+        avg_clustering_coeff = nx.average_clustering(g)
+        try:
+            diameter = nx.diameter(g)
+        except:
+            diameter = np.inf
+        degree_assortativity = nx.degree_pearson_correlation_coefficient(g)
+        is_bipartite = int(nx.is_bipartite(g))
         if best_space_counts[graph_num] == 1:
             writer.writerow([
                 graph_num,
                 int(best_space.iloc[0]['num nodes']),
                 int(best_space.iloc[0]['num edges']),
+                density,
+                self_loops,
+                node_connectivity,
+                avg_clustering_coeff,
+                diameter,
+                degree_assortativity,
+                is_bipartite,
                 best_space.iloc[0]['H dim'], 
                 int(best_space.iloc[0]['H copies']), 
                 best_space.iloc[0]['E dim'], 
