@@ -3,6 +3,24 @@ import csv
 import subprocess
 from collections import defaultdict
 
+def analyze_pathway_edge_types(fpath):
+    with open(fpath, 'r') as pathfile:
+        reader = csv.reader(pathfile, delimiter='\t')
+        edge_types = defaultdict(int)
+        error_count = 0
+        for i, line in enumerate(reader):
+            if i == 0:
+                continue
+            if i % 10000 == 0:
+                print(f"Processing line {i}")
+            try:
+                n1, e_type, n2, data_source, pubmed_id, pathway_names, med_ids = line
+            except:
+                error_count += 1
+                continue
+            edge_types[e_type] += 1
+    return edge_types
+
 def generate_pathways(fpath):
     with open(fpath, 'r') as pathfile:
         pathways = defaultdict(list)
@@ -26,7 +44,7 @@ def generate_pathways(fpath):
                 else:
                     int_id = pathway_to_int[name]
                 pathways[int_id].append(f"{n1}\t{e_type}\t{n2}\n")
-    return error_count, pathways
+    return error_count, pathways, pathway_to_int
 
 def write_pathways_to_files(pathways):
     for pid in pathways:
@@ -118,6 +136,7 @@ def convert_all_sif_to_edge(data_dir):
         convert_sif_to_edge_list(path)
 
 if __name__ == "__main__":
-    e_count, pathways = generate_pathways('PathwayCommons12.pathbank.hgnc.txt')
-    write_pathways_to_files(pathways)
-    convert_all_sif_to_edge('data')
+    e_count, pathways, pathway_to_int = generate_pathways('pathbank/PathwayCommons12.pathbank.hgnc.txt')
+    # write_pathways_to_files(pathways)
+    # convert_all_sif_to_edge('data')
+    # edge_types = analyze_pathway_edge_types('pathbank/PathwayCommons12.pathbank.hgnc.txt')
