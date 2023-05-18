@@ -31,6 +31,9 @@ global_edge_file = open('pathbank_string_edges.txt', 'w')
 error_count = 0
 for dir_name in os.listdir('../data'):
     fname = os.path.join('../data', dir_name, f'{dir_name}.txt')
+    orig_edges = open('../data', dir_name, f'{dir_name}.edges', 'r')
+    local_edge_file = open('../data', dir_name, f'{dir_name}_string.txt', 'w')
+    all_pathway_nodes = set()
     with open(fname, 'r') as filein:
         for line in filein:
             edge = line.strip().split('\t')
@@ -45,6 +48,7 @@ for dir_name in os.listdir('../data'):
             else:
                 error_count += 1
                 continue
+            all_pathway_nodes.add(p1a)
 
             if prot2 in aliases:
                 p2a = aliases[prot2]
@@ -56,13 +60,16 @@ for dir_name in os.listdir('../data'):
             else:  
                 error_count += 1
                 continue
-            if (p1a, p2a) in validated_links:
-                global_edge_file.write(f"{p1a}\t{p2a}\n")
-            elif (p2a, p1a) in validated_links:
-                global_edge_file.write(f"{p2a}\t{p1a}\n")
-            else:
-                error_count += 1
-                continue
+            all_pathway_nodes.add(p2a)
+        
+
+            # if (p1a, p2a) in validated_links:
+            #     global_edge_file.write(f"{p1a}\t{p2a}\n")
+            # elif (p2a, p1a) in validated_links:
+            #     global_edge_file.write(f"{p2a}\t{p1a}\n")
+            # else:
+            #     error_count += 1
+            #     continue
 global_edge_file.close()
 
 
