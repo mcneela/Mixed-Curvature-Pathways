@@ -1,4 +1,8 @@
 data
+*.tsv
+*.txt
+*.csv
+*.owl
 # macOS
 *.DS_Store
 
