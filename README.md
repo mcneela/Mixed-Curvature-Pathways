@@ -1,5 +1,6 @@
-# hyperbolics
-Hyperbolic embedding implementations of [Representation Tradeoffs for Hyperbolic Embeddings](https://arxiv.org/pdf/1804.03329.pdf) +  product embedding implementations of [Learning Mixed-Curvature Representations in Product Spaces](https://openreview.net/pdf?id=HJxeWnCcF7)
+# Mixed curvature pathways
+Mixed curvature graph representation learning for biological pathways.
+Most files are derived from and retain the commit history of [this repository](https://github.com/HazyResearch/hyperbolics) that provides hyperbolic embedding implementations of [Representation Tradeoffs for Hyperbolic Embeddings](https://arxiv.org/pdf/1804.03329.pdf) + product embedding implementations of [Learning Mixed-Curvature Representations in Product Spaces](https://openreview.net/pdf?id=HJxeWnCcF7)
 
 <p align="center">
   <img src="assets/binary_tree.png" alt="Hyperbolic embedding of binary tree" width="400"/>
