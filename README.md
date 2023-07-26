@@ -1,10 +1,13 @@
-# Mixed curvature pathways
-Mixed curvature graph representation learning for biological pathways.
+# Mixed-curvature pathways
+Mixed-curvature graph representation learning for biological pathways.
 Most files are derived from and retain the commit history of [this repository](https://github.com/HazyResearch/hyperbolics) that provides hyperbolic embedding implementations of [Representation Tradeoffs for Hyperbolic Embeddings](https://arxiv.org/pdf/1804.03329.pdf) + product embedding implementations of [Learning Mixed-Curvature Representations in Product Spaces](https://openreview.net/pdf?id=HJxeWnCcF7)
 
-<p align="center">
-  <img src="assets/binary_tree.png" alt="Hyperbolic embedding of binary tree" width="400"/>
-</p>
+The biological pathway analyses are presented in this workshop extended abstract:  
+[Mixed-Curvature Representation Learning for Biological Pathway Graphs](https://icml-compbio.github.io/2023/papers/WCBICML2023_paper117.pdf)  
+Daniel McNeela, Frederic Sala<sup>+</sup>, Anthony Gitter<sup>+</sup>.  
+2023 ICML Workshop on Computational Biology.
+
+<sup>+</sup> Equal contribution
 
 ## Setup
 We use Docker to set up the environment for our code. See Docker/README.md for installation and launch instructions.
