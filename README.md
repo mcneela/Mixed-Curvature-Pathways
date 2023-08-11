@@ -64,3 +64,7 @@ Products of hyperbolic spaces with Euclidean and spherical spaces are also suppo
 [comment]: # (        * warning about overloading files; if you play with batch size in this code, you might need to clear this directory after every run)
 
 -->
+
+## License
+The code is available under the [Apache License 2.0](LICENSE).
+Most of the source code is derived from the unlicensed [hyperbolics repository](https://github.com/HazyResearch/hyperbolics), and the [contributors](https://github.com/HazyResearch/hyperbolics/graphs/contributors) to that repository have been added to the license copyright.
