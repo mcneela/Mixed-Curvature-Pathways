@@ -6,18 +6,18 @@ from scipy.stats import gaussian_kde
 # Generate multiple datasets (for demonstration purposes)
 datasets = [
     {'x_column': 'Best Euclidean Distortion', 'y_column': 'Best Overall Distortion', 'label': 'Reactome'},
-    {'x_column': 'Best Euclidean Distortion', 'y_column': 'Best Overall Distortion', 'label': 'Pathbank'}
-    {'x_column': 'Best Euclidean Distortion', 'y_column': 'Best Overall Distortion', 'label': 'HumanCyc'}
-    {'x_column': 'Best Euclidean Distortion', 'y_column': 'Best Overall Distortion', 'label': 'KEGG'}
+    {'x_column': 'Best Euclidean Distortion', 'y_column': 'Best Overall Distortion', 'label': 'Pathbank'},
+    {'x_column': 'Best Euclidean Distortion', 'y_column': 'Best Overall Distortion', 'label': 'HumanCyc'},
+    {'x_column': 'Best Euclidean Distortion', 'y_column': 'Best Overall Distortion', 'label': 'KEGG'},
     {'x_column': 'Best Euclidean Distortion', 'y_column': 'Best Overall Distortion', 'label': 'NCBI'}
 ]
 
 dfs = [
-    pd.read_csv('reactome_unique_best_spaces.tsv', sep='\t'),
-    pd.read_csv('pathbank_unique_best_spaces.tsv', sep='\t')
-    pd.read_csv('humancyc_unique_best_spaces.tsv', sep='\t')
-    pd.read_csv('kegg_unique_best_spaces.tsv', sep='\t')
-    pd.read_csv('ncbi_unique_best_spaces.tsv', sep='\t')
+    pd.read_csv('reactome/reactome_unique_best_spaces.tsv', sep='\t'),
+    pd.read_csv('pathbank/pathbank_unique_best_spaces.tsv', sep='\t'),
+    pd.read_csv('humancyc/humancyc_unique_best_spaces.tsv', sep='\t'),
+    pd.read_csv('kegg/kegg_unique_best_spaces.tsv', sep='\t'),
+    pd.read_csv('ncbi/ncbi_unique_best_spaces.tsv', sep='\t')
 ]
 
 # Create a color map for each dataset
@@ -46,8 +46,10 @@ for i, (dataset, df) in enumerate(zip(datasets, dfs)):
     x, y, z = x[idx], y[idx], z[idx]
     
     # Plot the scatter plot with the current color map
+    xpoints = np.linspace(0, 0.4, 50)
+
     plt.scatter(x, y, c=z, cmap=color_maps[i], s=3, label=dataset['label'])
-    plt.plot(xpoints, ypoints, linestyle='-', color='r', lw=2)
+    plt.plot(xpoints, xpoints, linestyle='-', color='r', lw=2)
 
 # Add color bar
 plt.colorbar(label='Density')
@@ -56,4 +58,8 @@ plt.colorbar(label='Density')
 plt.legend()
 
 # Save the plot
-plt.savefig('plots/multi_dataset_scatterplot_density.png')
+plt.savefig('multiset/plots/multi_dataset_scatterplot_density.png', dpi=300)
+
+plt.xlim((0, 0.1))
+plt.ylim((0, 0.1))
+plt.savefig('multiset/plots/multi_dataset_scatterplot_density_zoomed.png', dpi=300)
