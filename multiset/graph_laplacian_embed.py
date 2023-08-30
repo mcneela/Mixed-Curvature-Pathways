@@ -2,11 +2,11 @@ import os
 import numpy as np
 import networkx as nx
 
-from argparser import ArgumentParser
+from argparse import ArgumentParser
 
 def embed_graph(fpath):
     G = nx.read_edgelist(fpath)
-    L = nx.laplacian_matrix(G)
+    L = nx.laplacian_matrix(G).todense()
     evals, M = np.linalg.eig(L)
     return M
 
