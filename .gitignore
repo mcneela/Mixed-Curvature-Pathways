@@ -18,5 +18,6 @@ products/data/wikidata_dicts/*
 # pyc files
 pytorch/*.pyc
 utils/*.pyc
-
+__pycache__
+.pat
 
