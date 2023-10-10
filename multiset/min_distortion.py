@@ -6,9 +6,6 @@ import argparse
 import numpy as np
 import networkx as nx
 
-# ncbi     c = 0.15455
-# kegg     c = 0.17356
-# pathbank c = 0.089915
 def calculate_distortion(G, embedded_nodes, c):
     distortion = torch.tensor(0.0, dtype=torch.float32)
     num_nodes = G.order()
@@ -59,15 +56,9 @@ def avg_distortion(graphs, nodes, c):
         total_dist += calculate_distortion(G, n, c)
     return total_dist / len(graphs)
 
-if dset != "pathbank":
-    graphs = [
-        nx.read_edgelist(f"{dset}/{gn}/{gn}.edges", nodetype=int) for gn in graph_nums
-    ]
-else:
-    graphs = [
-        nx.read_edgelist(f"data/{gn}/{gn}.edges", nodetype=int) for gn in graph_nums
-    ]
-
+graphs = [
+    nx.read_edgelist(f"{dset}/{gn}/{gn}.edges", nodetype=int) for gn in graph_nums
+]
 model = Constant()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-2)
 for i in range(100):
