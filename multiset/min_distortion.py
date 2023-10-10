@@ -1,4 +1,6 @@
+import os
 import csv
+import json
 import itertools
 
 import torch
@@ -6,9 +8,17 @@ import argparse
 import numpy as np
 import networkx as nx
 
-def calculate_distortion(G, embedded_nodes, c):
+def calculate_distortion(G, graph_num, embedded_nodes, c, dataset):
     distortion = torch.tensor(0.0, dtype=torch.float32)
     num_nodes = G.order()
+    if not os.path.exists(f"graph_dists/{dataset}/{graph_num}.json"):
+        if not os.path.exists(f"graph_dists/{dataset}"):
+            os.makedirs(f"graph_dists/{dataset}")
+        with open(f"graph_dists/{dataset}/{graph_num}.json", "w") as fp:
+            lengths = dict(nx.all_pairs_shortest_path_length(G))
+            json.dump(lengths, fp)
+    else:
+        lengths = json.load(open(f"graph_dists/{dataset}/{graph_num}.json", "r"))
     lengths = dict(nx.all_pairs_shortest_path_length(G))
     count = 0
     for n1, n2 in itertools.combinations(range(0, num_nodes), 2):
@@ -50,10 +60,10 @@ with open(args.file, 'r') as csvfile:
         embeds.append(embedded_nodes)
 
 
-def avg_distortion(graphs, nodes, c):
+def avg_distortion(graphs, nodes, c, dataset):
     total_dist = torch.tensor(0., dtype=torch.float32) 
-    for G, n in zip(graphs, nodes):
-        total_dist += calculate_distortion(G, n, c)
+    for i, (G, n) in enumerate(zip(graphs, nodes)):
+        total_dist += calculate_distortion(G, i, n, c, dataset)
     return total_dist / len(graphs)
 
 graphs = [
@@ -63,7 +73,7 @@ model = Constant()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-2)
 for i in range(100):
     optimizer.zero_grad()
-    loss = avg_distortion(graphs, embeds, model.c)
+    loss = avg_distortion(graphs, embeds, model.c, dset)
     loss.backward()
     print(f"Epoch: {i}, Loss: {loss}, C: {model.c.detach().numpy()}")
     optimizer.step()
