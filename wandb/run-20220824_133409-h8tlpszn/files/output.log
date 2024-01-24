@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "pytorch/pytorch_hyperbolic.py", line 579, in <module>
-    learn(**args)
-TypeError: learn() argument after ** must be a mapping, not Namespace

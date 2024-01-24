@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "pytorch/pytorch_hyperbolic.py", line 575, in <module>
-    wandb.log(**vars(args))
-  File "/Users/dmcneela/opt/anaconda3/envs/fred_code/lib/python3.8/site-packages/wandb/sdk/wandb_run.py", line 289, in wrapper
-    return func(self, *args, **kwargs)
-  File "/Users/dmcneela/opt/anaconda3/envs/fred_code/lib/python3.8/site-packages/wandb/sdk/wandb_run.py", line 255, in wrapper
-    return func(self, *args, **kwargs)
-TypeError: log() got an unexpected keyword argument 'dataset'
