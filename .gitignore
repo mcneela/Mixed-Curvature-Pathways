@@ -3,6 +3,9 @@ data
 *.txt
 *.csv
 *.owl
+wandb
+*_node2vec
+graph_dists
 # macOS
 *.DS_Store
 
