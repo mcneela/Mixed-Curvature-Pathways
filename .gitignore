@@ -3,9 +3,11 @@ data
 *.txt
 *.csv
 *.owl
+*.pkl
 wandb
 *_node2vec
 graph_dists
+*laplacian_models
 # macOS
 *.DS_Store
 
