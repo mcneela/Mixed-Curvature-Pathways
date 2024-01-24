@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "pytorch/pytorch_hyperbolic.py", line 575, in <module>
+    wandb.log(**dict(args))
+TypeError: 'Namespace' object is not iterable

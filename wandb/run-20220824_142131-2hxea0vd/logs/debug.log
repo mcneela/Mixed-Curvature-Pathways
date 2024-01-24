@@ -1,0 +1,25 @@
+2022-08-24 14:21:31,915 INFO    MainThread:81409 [wandb_setup.py:_flush():76] Configure stats pid to 81409
+2022-08-24 14:21:31,915 INFO    MainThread:81409 [wandb_setup.py:_flush():76] Loading settings from /Users/dmcneela/.config/wandb/settings
+2022-08-24 14:21:31,915 INFO    MainThread:81409 [wandb_setup.py:_flush():76] Loading settings from /Users/dmcneela/Documents/coding/research/chtc_curv/wandb/settings
+2022-08-24 14:21:31,915 INFO    MainThread:81409 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'_require_service': 'True'}
+2022-08-24 14:21:31,915 INFO    MainThread:81409 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'pytorch/pytorch_hyperbolic.py', 'program': 'pytorch/pytorch_hyperbolic.py'}
+2022-08-24 14:21:31,915 INFO    MainThread:81409 [wandb_init.py:_log_setup():461] Logging user logs to /Users/dmcneela/Documents/coding/research/chtc_curv/wandb/run-20220824_142131-2hxea0vd/logs/debug.log
+2022-08-24 14:21:31,916 INFO    MainThread:81409 [wandb_init.py:_log_setup():462] Logging internal logs to /Users/dmcneela/Documents/coding/research/chtc_curv/wandb/run-20220824_142131-2hxea0vd/logs/debug-internal.log
+2022-08-24 14:21:31,916 INFO    MainThread:81409 [wandb_init.py:init():495] calling init triggers
+2022-08-24 14:21:31,916 INFO    MainThread:81409 [wandb_init.py:init():498] wandb.init called with sweep_config: {}
+config: {'dataset': 'data/12173/12173.e.cleaned', 'dim': 33, 'hyp': 3, 'edim': 33, 'euc': 3, 'sdim': 33, 'sph': 3, 'riemann': False, 'scale': None, 'tol': None, 'use_yellowfin': False, 'use_adagrad': False, 'use_svrg': False, 'T': False, 'use_hmds': False, 'learning_rate': 0.001, 'decay_length': None, 'decay_step': None, 'momentum': None, 'epochs': 1000, 'burn_in': None, 'extra_steps': None, 'num_workers': None, 'batch_size': 32, 'sample': False, 'lazy_generation': False, 'subsample': 16, 'resample_freq': None, 'print_freq': None, 'checkpoint_freq': 100, 'model_save_file': None, 'model_load_file': None, 'warm_start': False, 'log_name': None, 'log': False, 'learn_scale': None, 'logloss': False, 'distloss': False, 'squareloss': False, 'symloss': False, 'exponential_rescale': None, 'visualize': False}
+2022-08-24 14:21:31,916 INFO    MainThread:81409 [wandb_init.py:init():548] starting backend
+2022-08-24 14:21:31,916 INFO    MainThread:81409 [wandb_init.py:init():552] setting up manager
+2022-08-24 14:21:31,927 INFO    MainThread:81409 [backend.py:_multiprocessing_setup():97] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2022-08-24 14:21:31,931 INFO    MainThread:81409 [wandb_init.py:init():558] backend started and connected
+2022-08-24 14:21:31,939 INFO    MainThread:81409 [wandb_init.py:init():636] updated telemetry
+2022-08-24 14:21:31,955 INFO    MainThread:81409 [wandb_init.py:init():667] communicating run to backend with 30 second timeout
+2022-08-24 14:21:32,321 INFO    MainThread:81409 [wandb_run.py:_on_init():1982] communicating current version
+2022-08-24 14:21:32,457 INFO    MainThread:81409 [wandb_run.py:_on_init():1986] got version response 
+2022-08-24 14:21:32,457 INFO    MainThread:81409 [wandb_init.py:init():700] starting run threads in backend
+2022-08-24 14:21:33,451 INFO    MainThread:81409 [wandb_run.py:_console_start():1962] atexit reg
+2022-08-24 14:21:33,451 INFO    MainThread:81409 [wandb_run.py:_redirect():1820] redirect: SettingsConsole.WRAP_RAW
+2022-08-24 14:21:33,452 INFO    MainThread:81409 [wandb_run.py:_redirect():1885] Wrapping output streams.
+2022-08-24 14:21:33,452 INFO    MainThread:81409 [wandb_run.py:_redirect():1907] Redirects installed.
+2022-08-24 14:21:33,452 INFO    MainThread:81409 [wandb_init.py:init():732] run started, returning control to user process
+2022-08-24 14:21:44,920 WARNING MsgRouterThr:81409 [router.py:message_loop():76] message_loop has been closed

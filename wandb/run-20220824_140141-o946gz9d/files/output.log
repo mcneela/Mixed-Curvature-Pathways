@@ -1,0 +1,86 @@
+2022-08-24T14:01:43 Commandline ['pytorch/pytorch_hyperbolic.py', '--dataset', 'data/12173/12173.e.cleaned', '--batch-size', '32', '--epochs', '1000', '--checkpoint-freq', '100', '--subsample', '16', '-l', '.001', '--euc', '3', '--edim', '33', '--hyp', '3', '--dim', '33', '--sdim', '33', '--sph', '3']
+pytorch/pytorch_hyperbolic.py:308: DeprecationWarning: The 'warn' function is deprecated, use 'warning' instead
+  if model_save_file is None: logging.warn("No Model Save selected!")
+2022-08-24T14:01:43 No Model Save selected!
+pytorch/pytorch_hyperbolic.py:310: DeprecationWarning:
+The scipy.sparse array containers will be used instead of matrices
+in Networkx 3.0. Use `to_scipy_sparse_array` instead.
+  GM = nx.to_scipy_sparse_matrix(G, nodelist=list(range(G.order())))
+2022-08-24T14:01:43 Loaded Graph data/12173/12173.e.cleaned with 4 nodes scale=1.0
+2022-08-24T14:01:43 Building dataset
+2022-08-24T14:01:43 Built distance matrix with 1.0 factor
+pytorch/pytorch_hyperbolic.py:72: DeprecationWarning:
+The scipy.sparse array containers will be used instead of matrices
+in Networkx 3.0. Use `to_scipy_sparse_array` instead.
+  self.graph     = nx.to_scipy_sparse_matrix(G, nodelist=list(range(G.order())))
+2022-08-24T14:01:43 Subsample: 4 points with scale 1.0 subsample=3
+2022-08-24T14:01:43 Built data loader
+2022-08-24T14:01:43 Creating a fresh model warm_start?=False
+2022-08-24T14:01:43 	 Warmstarting? False None 4
+/Users/dmcneela/Documents/coding/research/chtc_curv/pytorch/hyperbolic_parameter.py:78: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  x_ = torch.tensor(x)
+2022-08-24T14:01:43 Embedding() torch.Size([4, 34])
+2022-08-24T14:01:43 Embedding() torch.Size([4, 34])
+2022-08-24T14:01:43 Embedding() torch.Size([4, 34])
+2022-08-24T14:01:43 Embedding() torch.Size([4, 33])
+2022-08-24T14:01:43 Embedding() torch.Size([4, 33])
+2022-08-24T14:01:43 Embedding() torch.Size([4, 33])
+2022-08-24T14:01:43 Embedding() torch.Size([4, 34])
+2022-08-24T14:01:43 Embedding() torch.Size([4, 34])
+2022-08-24T14:01:43 Embedding() torch.Size([4, 34])
+2022-08-24T14:01:43 relative No Rescale
+2022-08-24T14:01:43 Constructed model with dim=33 and epochs=0 isnan=False
+2022-08-24T14:01:43 SGD (
+Parameter Group 0
+    dampening: 0
+    initial_lr: 0.0001
+    lr: 0.001
+    momentum: 0.0
+    nesterov: False
+    weight_decay: 0
+Parameter Group 1
+    dampening: 0
+    initial_lr: 0.0001
+    lr: 0.001
+    momentum: 0.0
+    nesterov: False
+    weight_decay: 0
+Parameter Group 2
+    dampening: 0
+    initial_lr: 0.0001
+    lr: 0.001
+    momentum: 0.0
+    nesterov: False
+    weight_decay: 0
+Parameter Group 3
+    dampening: 0
+    initial_lr: 1.0000000000000001e-07
+    lr: 1.0000000000000002e-06
+    momentum: 0.0
+    nesterov: False
+    weight_decay: 0
+)
+2022-08-24T14:01:43 *** Initial Checkpoint. Computing Stats
+2022-08-24T14:01:43 Compare matrices built
+MAX DISTANCE tensor(2., dtype=torch.float64)
+AVG DISTANCE tensor(1.5000, dtype=torch.float64)
+2022-08-24T14:01:44 Distortion avg=0.9474997645289566 wc=2.07303224167781 me=0.07091408565768163 mc=29.233010937838316 nan_elements=0.0
+2022-08-24T14:01:44 MAP = 0.7083333333333333
+2022-08-24T14:01:44 scale=[array([1.]), array([1.]), array([1.]), array([1.]), array([1.]), array([1.]), array([1.]), array([1.]), array([1.])]
+2022-08-24T14:01:44 *** End Initial Checkpoint
+/Users/dmcneela/opt/anaconda3/envs/fred_code/lib/python3.8/site-packages/torch/optim/lr_scheduler.py:129: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+pytorch/pytorch_hyperbolic.py:57: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  return torch.tensor(x, device=device)
+Traceback (most recent call last):
+  File "pytorch/pytorch_hyperbolic.py", line 580, in <module>
+    learn(**args)
+  File "pytorch/pytorch_hyperbolic.py", line 471, in learn
+    p.exp(lr)
+  File "/Users/dmcneela/Documents/coding/research/chtc_curv/pytorch/hyperbolic_parameter.py", line 116, in exp
+    assert torch.all(1 - torch.isnan(v))
+  File "/Users/dmcneela/opt/anaconda3/envs/fred_code/lib/python3.8/site-packages/torch/_tensor.py", line 30, in wrapped
+    return f(*args, **kwargs)
+  File "/Users/dmcneela/opt/anaconda3/envs/fred_code/lib/python3.8/site-packages/torch/_tensor.py", line 548, in __rsub__
+    return _C._VariableFunctions.rsub(self, other)
+RuntimeError: Subtraction, the `-` operator, with a bool tensor is not supported. If you are trying to invert a mask, use the `~` or `logical_not()` operator instead.

@@ -1,0 +1,6 @@
+program: pytorch/pytorch_hyperbolic.py
+parameters:
+  learning_rate:
+    min: 1e-5
+    max: 1.0
+    

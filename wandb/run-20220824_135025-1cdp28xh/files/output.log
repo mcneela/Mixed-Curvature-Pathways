@@ -1,0 +1,20 @@
+2022-08-24T13:50:26 Commandline ['pytorch/pytorch_hyperbolic.py', '--dataset', 'data/12173/12173.e.cleaned', '--batch-size', '32', '--epochs', '1000', '--checkpoint-freq', '100', '--subsample', '16', '-l', '.001', '--euc', '3', '--edim', '33', '--hyp', '3', '--dim', '33', '--sdim', '33', '--sph', '3']
+pytorch/pytorch_hyperbolic.py:308: DeprecationWarning: The 'warn' function is deprecated, use 'warning' instead
+  if model_save_file is None: logging.warn("No Model Save selected!")
+2022-08-24T13:50:26 No Model Save selected!
+pytorch/pytorch_hyperbolic.py:310: DeprecationWarning:
+The scipy.sparse array containers will be used instead of matrices
+in Networkx 3.0. Use `to_scipy_sparse_array` instead.
+  GM = nx.to_scipy_sparse_matrix(G, nodelist=list(range(G.order())))
+2022-08-24T13:50:26 Loaded Graph data/12173/12173.e.cleaned with 4 nodes scale=None
+2022-08-24T13:50:26 Building dataset
+Traceback (most recent call last):
+  File "pytorch/pytorch_hyperbolic.py", line 579, in <module>
+    learn(**vars(args))
+  File "pytorch/pytorch_hyperbolic.py", line 328, in learn
+    Z, z = build_dataset(G, lazy_generation, sample, subsample, scale, batch_size, weight_fn, num_workers)
+  File "pytorch/pytorch_hyperbolic.py", line 188, in build_dataset
+    Z   = gh.build_distance(G, scale, num_workers=int(num_workers) if num_workers is not None else 16)   # load the whole matrix
+  File "/Users/dmcneela/Documents/coding/research/chtc_curv/pytorch/graph_helpers.py", line 34, in build_distance
+    H *= scale
+numpy.core._exceptions._UFuncOutputCastingError: Cannot cast ufunc 'multiply' output from dtype('O') to dtype('float64') with casting rule 'same_kind'

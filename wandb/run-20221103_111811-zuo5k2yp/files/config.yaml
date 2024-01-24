@@ -1,0 +1,156 @@
+wandb_version: 1
+
+T:
+  desc: null
+  value: 10
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.13.2
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.8.13
+    start_time: 1667492291.677577
+    t:
+      1:
+      - 1
+      - 53
+      - 55
+      2:
+      - 1
+      - 53
+      - 55
+      3:
+      - 16
+      - 17
+      - 23
+      - 37
+      4: 3.8.13
+      5: 0.13.2
+      8:
+      - 4
+      - 5
+batch_size:
+  desc: null
+  value: 32
+burn_in:
+  desc: null
+  value: 0
+checkpoint_freq:
+  desc: null
+  value: 100
+dataset:
+  desc: null
+  value: data/24085845/24085845.edges
+decay_length:
+  desc: null
+  value: 1000
+decay_step:
+  desc: null
+  value: 1
+dim:
+  desc: null
+  value: 33
+distloss:
+  desc: null
+  value: false
+edim:
+  desc: null
+  value: 100
+epochs:
+  desc: null
+  value: 1000
+euc:
+  desc: null
+  value: 1
+exponential_rescale:
+  desc: null
+  value: null
+extra_steps:
+  desc: null
+  value: 1
+hyp:
+  desc: null
+  value: 1
+lazy_generation:
+  desc: null
+  value: false
+learn_scale:
+  desc: null
+  value: false
+learning_rate:
+  desc: null
+  value: 0.001
+log:
+  desc: null
+  value: false
+log_name:
+  desc: null
+  value: null
+logloss:
+  desc: null
+  value: false
+model_load_file:
+  desc: null
+  value: null
+model_save_file:
+  desc: null
+  value: null
+momentum:
+  desc: null
+  value: 0.0
+num_workers:
+  desc: null
+  value: null
+print_freq:
+  desc: null
+  value: 1
+resample_freq:
+  desc: null
+  value: 1000
+riemann:
+  desc: null
+  value: false
+sample:
+  desc: null
+  value: 1.0
+scale:
+  desc: null
+  value: 1.0
+sdim:
+  desc: null
+  value: 33
+sph:
+  desc: null
+  value: 1
+squareloss:
+  desc: null
+  value: false
+subsample:
+  desc: null
+  value: 16
+symloss:
+  desc: null
+  value: false
+tol:
+  desc: null
+  value: 1.0e-08
+use_adagrad:
+  desc: null
+  value: false
+use_hmds:
+  desc: null
+  value: false
+use_svrg:
+  desc: null
+  value: false
+use_yellowfin:
+  desc: null
+  value: false
+visualize:
+  desc: null
+  value: false
+warm_start:
+  desc: null
+  value: false

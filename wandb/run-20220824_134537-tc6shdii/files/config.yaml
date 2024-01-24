@@ -1,0 +1,154 @@
+wandb_version: 1
+
+T:
+  desc: null
+  value: null
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.13.2
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.8.13
+    start_time: 1661373937.764757
+    t:
+      1:
+      - 1
+      - 53
+      - 55
+      2:
+      - 1
+      - 53
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.8.13
+      5: 0.13.2
+      8:
+      - 4
+      - 5
+batch_size:
+  desc: null
+  value: '32'
+burn_in:
+  desc: null
+  value: null
+checkpoint_freq:
+  desc: null
+  value: '100'
+dataset:
+  desc: null
+  value: data/12173/12173.cleaned
+decay_length:
+  desc: null
+  value: null
+decay_step:
+  desc: null
+  value: null
+dim:
+  desc: null
+  value: '33'
+distloss:
+  desc: null
+  value: null
+edim:
+  desc: null
+  value: '33'
+epochs:
+  desc: null
+  value: '1000'
+euc:
+  desc: null
+  value: '3'
+exponential_rescale:
+  desc: null
+  value: null
+extra_steps:
+  desc: null
+  value: null
+hyp:
+  desc: null
+  value: '3'
+lazy_generation:
+  desc: null
+  value: null
+learn_scale:
+  desc: null
+  value: null
+learning_rate:
+  desc: null
+  value: '.001'
+log:
+  desc: null
+  value: null
+log_name:
+  desc: null
+  value: null
+logloss:
+  desc: null
+  value: null
+model_load_file:
+  desc: null
+  value: null
+model_save_file:
+  desc: null
+  value: null
+momentum:
+  desc: null
+  value: null
+num_workers:
+  desc: null
+  value: null
+print_freq:
+  desc: null
+  value: null
+resample_freq:
+  desc: null
+  value: null
+riemann:
+  desc: null
+  value: null
+sample:
+  desc: null
+  value: null
+scale:
+  desc: null
+  value: null
+sdim:
+  desc: null
+  value: '33'
+sph:
+  desc: null
+  value: '3'
+squareloss:
+  desc: null
+  value: null
+subsample:
+  desc: null
+  value: 16
+symloss:
+  desc: null
+  value: null
+tol:
+  desc: null
+  value: null
+use_adagrad:
+  desc: null
+  value: null
+use_hmds:
+  desc: null
+  value: null
+use_svrg:
+  desc: null
+  value: null
+use_yellowfin:
+  desc: null
+  value: null
+visualize:
+  desc: null
+  value: null
+warm_start:
+  desc: null
+  value: null

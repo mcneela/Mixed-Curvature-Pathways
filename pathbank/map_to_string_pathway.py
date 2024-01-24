@@ -1,31 +1,23 @@
 import os
 import csv
+import json
 import itertools
 import networkx as nx
 
-all_proteins = open('pathbank_all_proteins.csv', 'r')
-reader = csv.reader(all_proteins, delimiter=',')
-gene_prot_map = {}
-prot_gene_map = {}
-for line in reader:
-    uniprot, genbank_id, gene_name, locus = line[4], line[8], line[9], line[10]
-    gene_prot_map[genbank_id.upper()] = uniprot
-    gene_prot_map[gene_name.upper()] = uniprot
-    gene_prot_map[locus.upper()] = uniprot
-    prot_gene_map[uniprot] = genbank_id.upper()
-all_proteins.close()
+gene_prot_map = json.load(open('pathbank_prots.json', 'r'))
 
 
 aliases = {}
-alias_file = open('9606.protein.aliases.v11.5.txt', 'r')
+alias_file = open('../ncbi/9606.protein.aliases.v12.0.txt', 'r')
 for line in alias_file:
     str_name, alias, source = line.strip().split('\t')
-    if alias not in aliases:
-        aliases[alias] = str_name
+    if source.lower() == "ensembl_hgnc_uniprot_ids":
+        if alias not in aliases:
+            aliases[alias] = str_name
 alias_file.close()
 
 validated_links = {}
-link_file = open('9606.protein.physical.links.v11.5.txt', 'r')
+link_file = open('../ncbi/9606.protein.physical.links.v12.0.txt', 'r')
 for i, line in enumerate(link_file):
     if i == 0:
         continue
@@ -39,7 +31,7 @@ error_count = 0
 total_vs_missing = {}
 for i, dir_name in enumerate(os.listdir('../data')):
     print(dir_name)
-    fname = os.path.join('../data', dir_name, f'{dir_name}_undirected.edges')
+    fname = os.path.join('../data', dir_name, f'{dir_name}.txt')
     missing_edges = 0
     new_edges = []
     all_pathway_aliases = []
@@ -48,8 +40,8 @@ for i, dir_name in enumerate(os.listdir('../data')):
     with open(fname, 'r') as filein:
         for j, line in enumerate(filein):
             edge = line.strip().split('\t')
-            # prot1, etype, prot2 = edge
-            prot1, prot2, _ = edge
+            prot1, etype, prot2 = edge
+            # prot1, prot2, _ = edge
             if prot1 in aliases:
                 p1a = aliases[prot1]
             elif prot1 in gene_prot_map:
