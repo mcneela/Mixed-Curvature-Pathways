@@ -1,4 +1,6 @@
 # Mixed-Curvature Pathway Representation Learning
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15708504.svg)](https://doi.org/10.5281/zenodo.15708504)
+
 Mixed-curvature graph representation learning for biological pathways.
 Most files are derived from and retain the commit history of [this repository](https://github.com/HazyResearch/hyperbolics) that provides hyperbolic embedding implementations of [Representation Tradeoffs for Hyperbolic Embeddings](https://arxiv.org/pdf/1804.03329.pdf) + product embedding implementations of [Learning Mixed-Curvature Representations in Product Spaces](https://openreview.net/pdf?id=HJxeWnCcF7)
 
